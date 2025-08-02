@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><pre class="prettyprint source lang-markdown"><code># Redix Client SDK for Node.js
+
+**Node.js SDK for the Redix Healthcare Data Conversion REST API**
+
+The Redix Client SDK for Node.js provides a powerful interface to interact with the Redix Healthcare Data Conversion REST API. Convert EDI, HL7, XML, CSV, PDF, and other healthcare data formats into standardized outputs. It supports batch processing, file staging, management, and job tracking, requiring a running Redix Engine/REST API backend.
+
+## Quick Start
+
+Get started with a simple file conversion:
+
+```javascript
+const { RedixClient } = require('@redix/redix-client');
+
+async function quickStart() {
+  const client = new RedixClient({ baseUrl: 'https://redix.com/api/v1', apiKey: 'your-api-key' });
+  const result = await client.convertFileUpload({ 
+    inputFile: '/path/to/claim.txt', 
+    ifdFile: '/path/to/rule.ifd', 
+    ofdFile: '/path/to/rule.ofd', 
+    conversionFlag: 'x', 
+    warningLevel: 1 
+  });
+  console.log('Result:', result);
+}
+quickStart().catch(console.error);
+</code></pre>
+<p><em>Note</em>: All SDK methods are asynchronous and return Promises. Use <code>async/await</code> or <code>.then().catch()</code> for handling responses.</p>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage-example">Usage Example</a></li>
+<li><a href="#file-upload-example-curl">File Upload Example (cURL)</a></li>
+<li><a href="#api-reference">API Reference</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+<li><a href="#typescript-support">TypeScript Support</a></li>
+<li><a href="#support">Support</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#version">Version</a></li>
+</ul>
+<h2>Prerequisites</h2>
+<ul>
+<li><strong>Node.js</strong>: Version 18.0.0 or higher.</li>
+<li><strong>Redix Backend</strong>: A running Redix Engine/REST API instance (e.g., at <code>https://redix.com/api/v1</code>) with a valid API key. See <a href="https://redix.com/developer">Redix Developer Portal</a> for setup instructions.</li>
+<li><strong>Dependencies</strong>: Automatically installed via npm, including <code>axios</code> and <code>form-data</code>.</li>
+</ul>
+<h2>Installation</h2>
+<p>Install the SDK via npm:</p>
+<pre class="prettyprint source lang-bash"><code>npm install @redix/redix-client
+</code></pre>
+<h2>Usage Example</h2>
+<h3>CommonJS</h3>
+<pre class="prettyprint source lang-javascript"><code>const { RedixClient } = require('@redix/redix-client');
+
+async function main() {
+  const client = new RedixClient({
+    baseUrl: 'https://redix.com/api/v1',
+    apiKey: 'your-api-key-here',
+  });
+
+  try {
+    const result = await client.convertFileUpload({
+      inputFile: '/path/to/claim.txt',
+      ifdFile: '/path/to/rule.ifd',
+      ofdFile: '/path/to/rule.ofd',
+      conversionFlag: 'x', // X12
+      warningLevel: 1,     // Continue with warnings
+      userData: 'user123',
+      segmentTerminator: 'new line',
+      elementSeparator: '*',
+      compositeSeparator: ':',
+      releaseCharacter: '?',
+    });
+    console.log('Conversion Result:', result);
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+main();
+</code></pre>
+<h3>ES Modules</h3>
+<p>Add <code>&quot;type&quot;: &quot;module&quot;</code> to your <code>package.json</code>, then:</p>
+<pre class="prettyprint source lang-javascript"><code>import { RedixClient } from '@redix/redix-client';
+
+async function main() {
+  const client = new RedixClient({
+    baseUrl: 'https://redix.com/api/v1',
+    apiKey: 'your-api-key-here',
+  });
+
+  // Usage remains the same
+}
+
+main();
+</code></pre>
+<p><em>Note</em>: All SDK methods are asynchronous and return Promises. Use <code>async/await</code> or <code>.then().catch()</code> for handling responses.</p>
+<h2>File Upload Example (cURL)</h2>
+<pre class="prettyprint source lang-bash"><code>curl -X POST http://localhost:8000/api/v1/convert/file-upload \
+  -F &quot;Input_File=@/path/to/input.txt&quot; \
+  -F &quot;IFD_File=@/path/to/map.ifd&quot; \
+  -F &quot;OFD_File=@/path/to/map.ofd&quot; \
+  -F &quot;conversionFlag=x&quot; \
+  -F &quot;warningLevel=1&quot; \
+  -H &quot;X-API-Key: secret&quot;
+</code></pre>
+<p><em>Note</em>: This cURL command targets the Redix Engine/REST API backend endpoint, not the SDK itself. Ensure the backend is running at the specified URL. Parameter names (<code>Input_File</code>, etc.) match the server expectation based on <code>index.js</code>.</p>
+<h2>API Reference</h2>
+<p>The Redix Client SDK provides the following methods via the <code>RedixClient</code> class:</p>
+<ul>
+<li>
+<p><strong><code>healthCheck()</code></strong>: Performs a health check on the Redix API.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to an object with API status.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const status = await client.healthCheck();
+console.log('API Status:', status);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getFormOptions()</code></strong>: Gets dynamic options for the conversion form.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to an object with form options.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const options = await client.getFormOptions();
+console.log('Form Options:', options);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>listUserFiles(limit)</code></strong>: Lists recent conversion files.</p>
+<ul>
+<li><strong>Parameters</strong>: <code>limit</code> (number, optional, default: 50).</li>
+<li><strong>Returns</strong>: Promise resolving to an object with files array.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const files = await client.listUserFiles(50);
+console.log('User Files:', files);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>listServerFiles(path, include_dirs)</code></strong>: Lists files and directories in SHARED_DIR.</p>
+<ul>
+<li><strong>Parameters</strong>: <code>path</code> (string, optional, default: ''), <code>include_dirs</code> (boolean, optional, default: false).</li>
+<li><strong>Returns</strong>: Promise resolving to an object with files array.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const files = await client.listServerFiles('', false);
+console.log('Server Files:', files);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>listStagingFiles()</code></strong>: Lists files in the staging directory.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to an object with files array.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const files = await client.listStagingFiles();
+console.log('Staging Files:', files);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>listStagingProfiles()</code></strong>: Lists available staging profiles.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to a <code>StagingProfilesResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const profiles = await client.listStagingProfiles();
+console.log('Staging Profiles:', profiles);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>uploadToStaging(filePath)</code></strong>: Uploads a file to the staging directory.</p>
+<ul>
+<li><strong>Parameters</strong>: <code>filePath</code> (string).</li>
+<li><strong>Returns</strong>: Promise resolving to an <code>UploadResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const result = await client.uploadToStaging('/path/to/file.txt');
+console.log('Upload Result:', result);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>deleteFromStaging(filename)</code></strong>: Deletes a file from the staging directory.</p>
+<ul>
+<li><strong>Parameters</strong>: <code>filename</code> (string).</li>
+<li><strong>Returns</strong>: Promise resolving to a <code>FileDeleteResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const result = await client.deleteFromStaging('file.txt');
+console.log('Delete Result:', result);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>convertFileUpload(options)</code></strong>: Uploads and converts a single file.</p>
+<ul>
+<li><strong>Options</strong>: <code>inputFile</code> (string path), <code>ifdFile</code> (string path), <code>ofdFile</code> (string path), <code>conversionFlag</code> (e.g., 'x' for X12), <code>warningLevel</code> (0-2), <code>userData</code> (optional), <code>segmentTerminator</code>, <code>elementSeparator</code>, <code>compositeSeparator</code>, <code>releaseCharacter</code>.</li>
+<li><strong>Returns</strong>: Promise resolving to a <code>ConversionResponse</code> object.</li>
+<li><strong>Example</strong>: See &quot;Usage Example&quot; above.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>convertStagingFile(options)</code></strong>: Converts a file in staging.</p>
+<ul>
+<li><strong>Options</strong>: <code>stagedFilename</code> (string), <code>configProfile</code> (string, optional), <code>userData</code> (string, optional).</li>
+<li><strong>Returns</strong>: Promise resolving to a <code>ConversionResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const result = await client.convertStagingFile({ stagedFilename: 'staged.txt', configProfile: 'x12_837P_default_profile' });
+console.log('Conversion Result:', result);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>batchConvertFolder(options)</code></strong>: Initiates batch processing.</p>
+<ul>
+<li><strong>Options</strong>: <code>inputSubfolder</code> (string), <code>configProfile</code> (string), <code>outputSubfolder</code> (optional), <code>userData</code> (optional).</li>
+<li><strong>Returns</strong>: Promise resolving to <code>{ job_id: string; status?: string }</code>.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const result = await client.batchConvertFolder({ inputSubfolder: 'batch_input', configProfile: 'x12_837_default_profile' });
+console.log('Batch Job ID:', result.job_id);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getBatchStatus(jobId)</code></strong>: Retrieves batch job status.</p>
+<ul>
+<li><strong>Parameters</strong>: <code>jobId</code> (string).</li>
+<li><strong>Returns</strong>: Promise resolving to a <code>BatchStatusResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const status = await client.getBatchStatus('123');
+console.log('Status:', status.status);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>listBatchJobs(options)</code></strong>: Lists batch jobs with filters.</p>
+<ul>
+<li><strong>Options</strong>: <code>status</code>, <code>configProfile</code>, <code>startDate</code>, <code>endDate</code>, <code>limit</code>, <code>offset</code>.</li>
+<li><strong>Returns</strong>: Promise resolving to an array of <code>BatchJobSummary</code> objects.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const jobs = await client.listBatchJobs({ limit: 10 });
+console.log('Batch Jobs:', jobs);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getBatchJobsSummary(options)</code></strong>: Provides aggregate batch job statistics.</p>
+<ul>
+<li><strong>Options</strong>: <code>startDate</code>, <code>endDate</code>, <code>configProfile</code>.</li>
+<li><strong>Returns</strong>: Promise resolving to a <code>BatchSummaryResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const summary = await client.getBatchJobsSummary();
+console.log('Batch Summary:', summary);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getBatchJobLogs(jobId, options)</code></strong>: Retrieves logs for a batch job.</p>
+<ul>
+<li><strong>Options</strong>: <code>limit</code>, <code>offset</code>, <code>logLevel</code>.</li>
+<li><strong>Returns</strong>: Promise resolving to an array of <code>BatchLog</code> objects.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const logs = await client.getBatchJobLogs('123', { limit: 50 });
+console.log('Batch Logs:', logs);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getBatchFileDetail(jobId, filename)</code></strong>: Gets details for a specific file in a batch job.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to a <code>BatchFileDetail</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const detail = await client.getBatchFileDetail('123', 'claim.txt');
+console.log('File Detail:', detail);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>downloadGeneratedFile(fileType, filename)</code></strong>: Downloads a generated file.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to a <code>Buffer</code>.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const buffer = await client.downloadGeneratedFile('output', 'claim.txt');
+fs.writeFile('downloaded.txt', buffer, (err) => console.log(err || 'Saved'));
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>viewGeneratedFile(fileType, filename)</code></strong>: Views the content of a generated file as plain text.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to a <code>FileViewResponse</code> object.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const content = await client.viewGeneratedFile('output', 'claim.txt');
+console.log('File Content:', content.content);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>getEngineInfo()</code></strong>: Gets information about the Redix engine installation.</p>
+<ul>
+<li><strong>Returns</strong>: Promise resolving to an object with engine details.</li>
+<li><strong>Example</strong>:<pre class="prettyprint source lang-javascript"><code>const info = await client.getEngineInfo();
+console.log('Engine Info:', info);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>More Details</strong>: See the <a href="./docs/index.html">generated API documentation</a> (generated with <code>npm run docs</code>).</p>
+</li>
+</ul>
+<h2>Error Handling</h2>
+<p>The SDK throws <code>RedixAPIError</code> for API failures. Handle it as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>const { RedixAPIError } = require('@redix/redix-client');
+
+try {
+  await client.getBatchStatus('invalid-id');
+} catch (error) {
+  if (error instanceof RedixAPIError) {
+    console.error(`API Error ${error.status_code}: ${error.message}`);
+  }
+}
+</code></pre>
+<h2>TypeScript Support</h2>
+<p>This SDK includes TypeScript definitions in <code>src/index.d.ts</code>. Use with TypeScript projects:</p>
+<pre class="prettyprint source lang-typescript"><code>import { RedixClient } from '@redix/redix-client';
+
+const client: RedixClient = new RedixClient({
+  baseUrl: 'https://redix.com/api/v1',
+  apiKey: 'your-key',
+});
+
+const result = await client.convertFileUpload({
+  inputFile: '/path/to/claim.txt',
+  ifdFile: '/path/to/rule.ifd',
+  ofdFile: '/path/to/rule.ofd',
+  conversionFlag: 'x',
+  warningLevel: 1,
+});
+</code></pre>
+<h2>Support</h2>
+<ul>
+<li><strong>Email</strong>: <a href="mailto:support@redix.com">support@redix.com</a></li>
+<li><strong>Issues</strong>: <a href="https://github.com/Redix-International-Inc/redix-client-js/issues">GitHub Issues</a></li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the <a href="LICENSE">MIT License</a>. See the <code>LICENSE</code> file for details.</p>
+<h2>Version</h2>
+<ul>
+<li>Current Version: 0.2.2</li>
+<li><a href="https://www.npmjs.com/package/@redix/redix-client"><img src="https://img.shields.io/npm/v/@redix/redix-client.svg" alt="npm version"></a></li>
+<li>Check the <a href="https://www.npmjs.com/package/@redix/redix-client">npm package page</a> for updates.</li>
+</ul>
+<pre class="prettyprint source"><code>
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RedixAPIError.html">RedixAPIError</a></li><li><a href="RedixClient.html">RedixClient</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Aug 02 2025 10:24:50 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

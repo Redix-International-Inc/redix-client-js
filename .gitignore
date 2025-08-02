@@ -1,0 +1,32 @@
+# Node.js build artifacts
+node_modules/
+dist/
+*.log
+
+# Test files
+test/
+*.test.js
+*.spec.js
+
+# Environment variables
+.env
+*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# JSDoc configuration (optional, if not needed in package)
+jsdoc.json
+
+# Shared folder exclusions (relative to node-sdk)
+../shared/
+!../shared/docs/
+!../shared/docs/*.md
+!../shared/docs/*.docx
