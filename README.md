@@ -1,4 +1,3 @@
-```markdown
 # Redix Client SDK for Node.js
 
 **Node.js SDK for the Redix Healthcare Data Conversion REST API**
@@ -341,5 +340,5 @@ This project is licensed under the [MIT License](LICENSE). See the `LICENSE` fil
 - Current Version: 0.2.2
 - [![npm version](https://img.shields.io/npm/v/@redix/redix-client.svg)](https://www.npmjs.com/package/@redix/redix-client)
 - Check the [npm package page](https://www.npmjs.com/package/@redix/redix-client) for updates.
-```
+
 
