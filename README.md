@@ -9,7 +9,7 @@ The Redix Client SDK for Node.js provides a powerful interface to interact with 
 Get started with a simple file conversion:
 
 ```javascript
-const { RedixClient } = require('@redix/redix-client');
+const { RedixClient } = require('@redixint/redix-client');
 
 async function quickStart() {
   const client = new RedixClient({ baseUrl: 'https://redix.com/api/v1', apiKey: 'your-api-key' });
@@ -51,7 +51,7 @@ quickStart().catch(console.error);
 Install the SDK via npm:
 
 ```bash
-npm install @redix/redix-client
+npm install @redixint/redix-client
 ```
 
 ## Usage Example
@@ -59,7 +59,7 @@ npm install @redix/redix-client
 ### CommonJS
 
 ```javascript
-const { RedixClient } = require('@redix/redix-client');
+const { RedixClient } = require('@redixint/redix-client');
 
 async function main() {
   const client = new RedixClient({
@@ -94,7 +94,7 @@ main();
 Add `"type": "module"` to your `package.json`, then:
 
 ```javascript
-import { RedixClient } from '@redix/redix-client';
+import { RedixClient } from '@redixint/redix-client';
 
 async function main() {
   const client = new RedixClient({
@@ -294,7 +294,7 @@ The Redix Client SDK provides the following methods via the `RedixClient` class:
 The SDK throws `RedixAPIError` for API failures. Handle it as follows:
 
 ```javascript
-const { RedixAPIError } = require('@redix/redix-client');
+const { RedixAPIError } = require('@redixint/redix-client');
 
 try {
   await client.getBatchStatus('invalid-id');
@@ -310,7 +310,7 @@ try {
 This SDK includes TypeScript definitions in `src/index.d.ts`. Use with TypeScript projects:
 
 ```typescript
-import { RedixClient } from '@redix/redix-client';
+import { RedixClient } from '@redixint/redix-client';
 
 const client: RedixClient = new RedixClient({
   baseUrl: 'https://redix.com/api/v1',
@@ -338,7 +338,7 @@ This project is licensed under the [MIT License](LICENSE). See the `LICENSE` fil
 ## Version
 
 - Current Version: 0.2.2
-- [![npm version](https://img.shields.io/npm/v/@redix/redix-client.svg)](https://www.npmjs.com/package/@redix/redix-client)
-- Check the [npm package page](https://www.npmjs.com/package/@redix/redix-client) for updates.
+- [![npm version](https://img.shields.io/npm/v/@redixint/redix-client.svg)](https://www.npmjs.com/package/@redixint/redix-client)
+- Check the [npm package page](https://www.npmjs.com/package/@redixint/redix-client) for updates.
 
 
